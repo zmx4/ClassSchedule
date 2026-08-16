@@ -1,21 +1,17 @@
 using ClassSchedule.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClassSchedule.Services;
+namespace ClassSchedule.Data;
 
 // 模型类型 ClassSchedule 与命名空间 ClassSchedule 冲突，使用别名区分
-using Schedule = ClassSchedule.Models.ClassSchedule;
+using Schedule = Models.ClassSchedule;
 
 /// <summary>课程表数据库上下文，使用 SQLite 存储。</summary>
-public class ClassScheduleDbContext : DbContext
+public class ClassScheduleDbContext(DbContextOptions<ClassScheduleDbContext> options) : DbContext(options)
 {
     public DbSet<Schedule> Schedules => Set<Schedule>();
     public DbSet<Class> Classes => Set<Class>();
     public DbSet<ClassTime> ClassTimes => Set<ClassTime>();
-
-    public ClassScheduleDbContext(DbContextOptions<ClassScheduleDbContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,3 +1,4 @@
+using ClassSchedule.Data;
 using ClassSchedule.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
