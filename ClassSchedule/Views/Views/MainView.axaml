@@ -83,21 +83,26 @@
         </StackPanel>
       </Border>
 
-      <!-- 课表主体（网格由代码后置按数据构建） -->
-      <Border Background="{DynamicResource CellBackgroundBrush}" CornerRadius="10" ClipToBounds="True"
-              IsVisible="{Binding HasSchedule}">
-        <Grid x:Name="ScheduleRoot" ColumnDefinitions="Auto,*,*,*,*,*,*,*"/>
-      </Border>
+      <!-- 内容区（作为 DockPanel 最后一个子元素 → 填充剩余空间）。
+           之前课表主体不是最后一个子元素，默认按 Dock.Left 停靠并按 DesiredSize 布置宽度，
+           导致表格只占窗口一部分；空状态与课表主体互斥（只显示其一），故叠放于同一网格内。 -->
+      <Grid>
+        <!-- 课表主体（网格由代码后置按数据构建） -->
+        <Border Background="{DynamicResource CellBackgroundBrush}" CornerRadius="10" ClipToBounds="True"
+                IsVisible="{Binding HasSchedule}">
+          <Grid x:Name="ScheduleRoot" ColumnDefinitions="Auto,*,*,*,*,*,*,*"/>
+        </Border>
 
-      <!-- 空状态 -->
-      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10"
-                  IsVisible="{Binding HasNoSchedule}">
-        <TextBlock Text="📅" FontSize="40" HorizontalAlignment="Center"/>
-        <TextBlock Text="暂无课表" FontSize="20" FontWeight="SemiBold"
-                   Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center"/>
-        <TextBlock Text="{Binding StatusMessage}" FontSize="13"
-                   Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" TextWrapping="Wrap"/>
-      </StackPanel>
+        <!-- 空状态 -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10"
+                    IsVisible="{Binding HasNoSchedule}">
+          <TextBlock Text="📅" FontSize="40" HorizontalAlignment="Center"/>
+          <TextBlock Text="暂无课表" FontSize="20" FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center"/>
+          <TextBlock Text="{Binding StatusMessage}" FontSize="13"
+                     Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+        </StackPanel>
+      </Grid>
 
     </DockPanel>
   </Grid>
