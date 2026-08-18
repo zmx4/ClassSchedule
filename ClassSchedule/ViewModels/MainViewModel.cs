@@ -17,14 +17,14 @@ using Schedule = ClassSchedule.Models.ClassSchedule;
 /// <summary>主页面 ViewModel：加载课表、按周构建课表网格并驱动周选择滑动条。</summary>
 public partial class MainViewModel : ViewModelBase
 {
-    private static readonly string[] DayNames = { "", "周一", "周二", "周三", "周四", "周五", "周六", "周日" };
+    private static readonly string[] DayNames = ["", "周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 
     private static readonly Color[] Palette =
-    {
+    [
         Color.Parse("#3B82F6"), Color.Parse("#0EA5E9"), Color.Parse("#10B981"),
         Color.Parse("#F59E0B"), Color.Parse("#EF4444"), Color.Parse("#8B5CF6"),
-        Color.Parse("#14B8A6"), Color.Parse("#F97316"),
-    };
+        Color.Parse("#14B8A6"), Color.Parse("#F97316")
+    ];
 
     private readonly ScheduleRepository? _repository;
     private Schedule? _schedule;
@@ -319,7 +319,7 @@ public partial class MainViewModel : ViewModelBase
         return 1;
     }
 
-    /// <summary>按课程名取一个稳定的配色。</summary>
+    /// <summary>按课程名取一个稳定地配色。</summary>
     private static IBrush PickBrush(string name)
     {
         var hash = 0;
