@@ -18,7 +18,9 @@ public class Class
     /// <summary>教学班名称/课程编号，如 (2026-2027-1)-BK20209-03</summary>
     [StringLength(64)]
     public string Code { get; init; } = string.Empty;
+
     /// <summary>学分</summary>
     public double Credits { get; init; }
+
     public ICollection<ClassTime> ClassTimes { get; init; } = new List<ClassTime>();
 }

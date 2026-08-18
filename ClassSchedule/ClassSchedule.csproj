@@ -11,6 +11,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <!-- 示例课表 HTML：随构建复制到输出目录（含引用它的桌面项目），首次运行无数据时用于演示主页面 -->
+        <Content Include="..\UnitTest\Resources\个人课表查询.html" Link="Resources\个人课表查询.html" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="Avalonia.Themes.Fluent"/>
         <PackageReference Include="Avalonia.Fonts.Inter"/>

@@ -3,14 +3,102 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ClassSchedule.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1180" d:DesignHeight="720"
              x:Class="ClassSchedule.Views.MainView"
              x:DataType="vm:MainViewModel">
+
+  <!-- 设计期预览：VM 参数构造函数会因 Design.IsDesignMode 加载示例课表 -->
   <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="PageBackgroundBrush" Color="#F5F6F8"/>
+          <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#EAECEF"/>
+          <SolidColorBrush x:Key="CellBackgroundBrush" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="GridLineBrush" Color="#E4E7EB"/>
+          <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1F2329"/>
+          <SolidColorBrush x:Key="TextSecondaryBrush" Color="#6B7280"/>
+          <SolidColorBrush x:Key="WeekBarBackgroundBrush" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="AccentBrush" Color="#3B82F6"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="PageBackgroundBrush" Color="#1B1B1F"/>
+          <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#26262B"/>
+          <SolidColorBrush x:Key="CellBackgroundBrush" Color="#2A2A30"/>
+          <SolidColorBrush x:Key="GridLineBrush" Color="#3A3A42"/>
+          <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E8E8EA"/>
+          <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9A9AA3"/>
+          <SolidColorBrush x:Key="WeekBarBackgroundBrush" Color="#26262B"/>
+          <SolidColorBrush x:Key="AccentBrush" Color="#4C9AFF"/>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+
+      <!-- 课程卡片模板（由代码后置通过 template.Build(item) 使用） -->
+      <DataTemplate x:Key="CourseCardTemplate" x:DataType="vm:ScheduleItemViewModel">
+        <Border Margin="3" CornerRadius="6" Background="{Binding Color}" Padding="6,4"
+                BoxShadow="0 2 6 0 rgba(0,0,0,0.18)">
+          <StackPanel Spacing="1" VerticalAlignment="Center">
+            <TextBlock Text="{Binding Name}" FontSize="12.5" FontWeight="SemiBold"
+                       TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxLines="3" Foreground="White"/>
+            <TextBlock Text="{Binding Location}" FontSize="10.5" Foreground="#E8F0FE" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Text="{Binding Instructor}" FontSize="10.5" Foreground="#E8F0FE" TextTrimming="CharacterEllipsis"/>
+          </StackPanel>
+        </Border>
+      </DataTemplate>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid Background="{DynamicResource PageBackgroundBrush}">
+    <DockPanel Margin="16">
+
+      <!-- 标题栏 -->
+      <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="4,0,4,12">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <Border Width="4" Height="18" CornerRadius="2" Background="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding ScheduleName}" FontSize="18" FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+        </StackPanel>
+        <TextBlock Grid.Column="1" Text="{Binding WeekText}" FontSize="14" FontWeight="SemiBold"
+                   Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+      </Grid>
+
+      <!-- 底部：周选择滑动条 -->
+      <Border DockPanel.Dock="Bottom" Background="{DynamicResource WeekBarBackgroundBrush}"
+              CornerRadius="10" Padding="16,10" Margin="0,12,0,0"
+              IsVisible="{Binding HasSchedule}">
+        <StackPanel Spacing="4">
+          <TextBlock Text="{Binding WeekText}" FontSize="13" FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center"/>
+          <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+            <TextBlock Text="第 1 周" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+            <Slider Grid.Column="1" Minimum="1" Maximum="{Binding TotalWeeks}"
+                    Value="{Binding SelectedWeek}" TickFrequency="1" IsSnapToTickEnabled="True"
+                    TickPlacement="BottomRight" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="2" Text="周" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <!-- 课表主体（网格由代码后置按数据构建） -->
+      <Border Background="{DynamicResource CellBackgroundBrush}" CornerRadius="10" ClipToBounds="True"
+              IsVisible="{Binding HasSchedule}">
+        <Grid x:Name="ScheduleRoot" ColumnDefinitions="Auto,*,*,*,*,*,*,*"/>
+      </Border>
+
+      <!-- 空状态 -->
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10"
+                  IsVisible="{Binding HasNoSchedule}">
+        <TextBlock Text="📅" FontSize="40" HorizontalAlignment="Center"/>
+        <TextBlock Text="暂无课表" FontSize="20" FontWeight="SemiBold"
+                   Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding StatusMessage}" FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+      </StackPanel>
+
+    </DockPanel>
+  </Grid>
 </UserControl>

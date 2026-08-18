@@ -1,11 +1,16 @@
+using System;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using ClassSchedule.Data;
+using ClassSchedule.Services;
 using ClassSchedule.ViewModels;
 using ClassSchedule.Views;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClassSchedule;
 
@@ -25,18 +30,39 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel()
+                DataContext = CreateMainViewModel()
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = CreateMainViewModel()
             };
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    /// <summary>创建主页面 ViewModel，从 SQLite 加载课表数据。</summary>
+    private static MainViewModel CreateMainViewModel()
+    {
+        try
+        {
+            var dbPath = Path.Combine(AppContext.BaseDirectory, "classschedule.db");
+            var options = new DbContextOptionsBuilder<ClassScheduleDbContext>()
+                .UseSqlite($"Data Source={dbPath}")
+                .Options;
+            var db = new ClassScheduleDbContext(options);
+            db.Database.EnsureCreated();
+            return new MainViewModel(new ScheduleRepository(db));
+        }
+        catch (Exception ex)
+        {
+            var viewModel = new MainViewModel();
+            viewModel.StatusMessage = "打开数据库失败：" + ex.Message;
+            return viewModel;
+        }
     }
 
     private void DisableAvaloniaDataAnnotationValidation()
