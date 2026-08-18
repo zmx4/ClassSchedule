@@ -6,10 +6,10 @@ namespace ClassSchedule.Models;
 
 public class ClassSchedule
 {
-    public int Id{ get; set; }
+    public int Id{ get; init; }
     [StringLength(64)]
-    public string Name { get; set; } = string.Empty;
-    public DateOnly StartTime { get; set; }
-    public DateOnly EndTime { get; set; }
-    public ICollection<Class> Classes { get; set; } = new List<Class>();
+    public string Name { get; init; } = string.Empty;
+    public DateOnly StartTime { get; init; }
+    public DateOnly EndTime { get; init; }
+    public ICollection<Class> Classes { get; init; } = new List<Class>();
 }

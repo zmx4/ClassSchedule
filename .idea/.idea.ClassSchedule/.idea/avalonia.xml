@@ -6,6 +6,7 @@
         <entry key="ClassSchedule/App.axaml" value="ClassSchedule.Desktop/ClassSchedule.Desktop.csproj" />
         <entry key="ClassSchedule/Views/MainView.axaml" value="ClassSchedule.Desktop/ClassSchedule.Desktop.csproj" />
         <entry key="ClassSchedule/Views/MainWindow.axaml" value="ClassSchedule.Desktop/ClassSchedule.Desktop.csproj" />
+        <entry key="ClassSchedule/Views/Views/MainView.axaml" value="ClassSchedule.Desktop/ClassSchedule.Desktop.csproj" />
       </map>
     </option>
   </component>
